@@ -1,9 +1,9 @@
-﻿using AutoFactories.Types;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFactories.Types;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoFactories.Extensions
 {
@@ -34,10 +34,16 @@ namespace AutoFactories.Extensions
         {
             if (typeSymbol is INamedTypeSymbol namedType)
             {
+                if (namedType.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
+                {
+                    var underlyingType = namedType.TypeArguments[0];
+                    var resolved = ResolveTypeName(underlyingType);
+                    return new MetadataTypeName(resolved.Name, resolved.Namespace, true, resolved.IsAlias);
+                }
+
                 string name = typeSymbol.Name;
                 string @namespace = GetFullNamespace(namedType);
-                bool isNullable = typeSymbol.NullableAnnotation == NullableAnnotation.Annotated 
-                    || namedType.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
+                bool isNullable = typeSymbol.NullableAnnotation == NullableAnnotation.Annotated;
                 bool isAlias = false;
 
                 if (s_alias.TryGetValue($"{@namespace}.{name}", out string alias))
@@ -64,11 +70,11 @@ namespace AutoFactories.Extensions
 
         public static string ResolveTypeToString(ITypeSymbol typeSymbol)
         {
-            if(typeSymbol is INamedTypeSymbol namedType)
+            if (typeSymbol is INamedTypeSymbol namedType)
             {
                 return ResolveTypeName(typeSymbol).QualifiedName;
             }
-            else if(typeSymbol.TypeKind == TypeKind.Array)
+            else if (typeSymbol.TypeKind == TypeKind.Array)
             {
                 IArrayTypeSymbol arrayType = (IArrayTypeSymbol)typeSymbol;
                 return $"{ResolveTypeToString(arrayType.ElementType)}[{new string(',', arrayType.Rank - 1)}]";

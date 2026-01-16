@@ -11,6 +11,30 @@ namespace AutoFactories.Visitors
 
     internal class FactoryDeclaration
     {
+        /// <summary>
+        /// Comparer that deduplicates parameters by their qualified type name.
+        /// Used when building shared factories to avoid duplicate constructor parameters
+        /// when multiple classes have [FromFactory] parameters of the same type.
+        /// </summary>
+        private class ParameterTypeEqualityComparer : IEqualityComparer<ParameterSyntaxVisitor>
+        {
+            public bool Equals(ParameterSyntaxVisitor x, ParameterSyntaxVisitor y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (x is null || y is null) return false;
+                
+                // Deduplicate by qualified type name only
+                // Parameters with the same type should be considered equal
+                // even if they have different parameter names
+                return x.Type.QualifiedName.Equals(y.Type.QualifiedName);
+            }
+
+            public int GetHashCode(ParameterSyntaxVisitor obj)
+            {
+                return obj?.Type.QualifiedName?.GetHashCode() ?? 0;
+            }
+        }
+
         public MetadataTypeName Type { get; }
         public AccessModifier ImplementationAccessModifier { get; }
         public AccessModifier InterfaceAccessModifier { get; }
@@ -29,6 +53,8 @@ namespace AutoFactories.Visitors
                 .Where(c => !c.IsStatic)
                 .SelectMany(c => c.Parameters)
                 .Where(p => p.HasMarkerAttribute)
+                .GroupBy(p => p.Type.QualifiedName)  // Group by type's qualified name
+                .Select(g => g.First())               // Take first parameter of each type
                 .ToList();
 
             Usings = classes.SelectMany(c => c.Usings)
