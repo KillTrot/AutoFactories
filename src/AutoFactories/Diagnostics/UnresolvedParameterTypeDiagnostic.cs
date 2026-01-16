@@ -1,6 +1,5 @@
 ﻿using AutoFactories.Visitors;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AutoFactories.Diagnostics
 {

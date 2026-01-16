@@ -1,5 +1,4 @@
 ﻿using AutoFactories.Types;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Ninject.AutoFactories;
 
 namespace AutoFactories

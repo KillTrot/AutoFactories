@@ -3,7 +3,6 @@ using HandlebarsDotNet;
 using HandlebarsDotNet.MemberAccessors;
 using HandlebarsDotNet.PathStructure;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections;
 using System.Collections.Generic;

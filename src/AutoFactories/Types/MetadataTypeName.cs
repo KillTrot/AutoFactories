@@ -1,15 +1,10 @@
 ﻿using AutoFactories.Extensions;
 using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace AutoFactories.Types
 {
     internal struct MetadataTypeName
     {
-        private readonly string m_shortName;
-
         public string Name { get; init; }
         public string? Namespace { get; init; }
         public string QualifiedName { get; init; }
@@ -45,7 +40,7 @@ namespace AutoFactories.Types
                 return false;
             }
 
-            return string.Equals(name, Name) || string.Equals(name, m_shortName);
+            return string.Equals(name, Name);
         }
 
         public override string ToString()
