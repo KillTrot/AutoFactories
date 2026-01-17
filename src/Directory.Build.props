@@ -16,7 +16,7 @@
     <None Include="Views/**" Pack="True" PackagePath="Views"/>
     
     <!-- Shared References -->
-    <PackageReference Include="GitVersion.MsBuild" Version="6.0.2">
+    <PackageReference Include="GitVersion.MsBuild" Version="6.0.2" Condition="'$(GitVersion_Enabled)' != 'false'">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
