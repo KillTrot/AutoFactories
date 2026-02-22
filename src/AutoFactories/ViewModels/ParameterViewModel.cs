@@ -41,6 +41,8 @@ namespace AutoFactories.Models
         public int Position { get; set; }
         public bool IsFirst { get; set; }
         public bool IsLast { get; set; }
+        public string? DefaultValue { get; set; }
+        public bool HasDefaultValue => !string.IsNullOrEmpty(DefaultValue);
 
         public ParameterViewModel()
         {
@@ -53,7 +55,8 @@ namespace AutoFactories.Models
             {
                 Name = visitor.Name?.ToCamelCase() ?? string.Empty,
                 Type = visitor.Type,
-                IsRequired = !visitor.HasMarkerAttribute
+                IsRequired = !visitor.HasMarkerAttribute,
+                DefaultValue = visitor.DefaultValue
             };
     }
 }

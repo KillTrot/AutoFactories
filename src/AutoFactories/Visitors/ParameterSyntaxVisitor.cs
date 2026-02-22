@@ -18,7 +18,7 @@ namespace AutoFactories.Visitors
         public bool HasMarkerAttribute { get; private set; }
 
         public AccessModifier Accessibility { get; private set; }
-
+        public string? DefaultValue { get; private set; }
         public Location? AttributeLocation { get; private set; }
 
         public ConstructorDeclarationVisitor Constructor { get; }
@@ -52,6 +52,20 @@ namespace AutoFactories.Visitors
             Name = syntax.Identifier.Text;
             HasMarkerAttribute = markerAttribute is not null;
             AttributeLocation = markerAttribute?.GetLocation();
+            // Try to capture default value from syntax.Default
+            DefaultValue = syntax.Default?.Value.ToFullString().Trim();
+            
+            // Fallback: parse the entire parameter text for default value
+            if (string.IsNullOrEmpty(DefaultValue))
+            {
+                var paramText = syntax.ToFullString().Trim();
+                var equalsIndex = paramText.IndexOf('=');
+                if (equalsIndex >= 0)
+                {
+                    DefaultValue = paramText.Substring(equalsIndex + 1).Trim();
+                }
+            }
+
 
             if (typeSymbol is not null)
             {

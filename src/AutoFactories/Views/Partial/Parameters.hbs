@@ -1,1 +1,2 @@
-﻿{{#each RequiredParameters}}{{> ToTypeReference Type}} {{Name}}{{#unless @Last}}, {{/unless}}{{/each}}
+﻿{{#each RequiredParameters}}{{> ToTypeReference Type}} {{Name}}{{#if HasDefaultValue}} =
+{{DefaultValue}}{{/if}}{{#unless @Last}}, {{/unless}}{{/each}}
